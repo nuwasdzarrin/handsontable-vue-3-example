@@ -167,21 +167,37 @@ const handsOnTableSetting = ref({
   ],
   columns: [...secondHeaderColumn.map(secHeader => secHeader.setup)],
   manualColumnResize: true,
-  contextMenu: props.originData.length ? false : {
-    items: {
-      row_above: {
-        callback() {
-          addRow(this.getSelectedLast()[0])
-        }
-      },
-      row_below: {
-        callback() {
-          addRow(this.getSelectedLast()[0]+1)
-        }
-      },
-      remove_row: true
-    }
+  contextMenu: [
+    {
+      name: 'Insert row above',
+      callback() {
+        addRow(this.getSelectedLast()[0])
+      }
+    },
+    {
+      name: 'Insert row below',
+      callback() {
+        addRow(this.getSelectedLast()[0] + 1)
+      }
+    },
+    'remove_row', 'hidden_columns_hide', 'hidden_columns_show',
+    {
+      name: 'Freeze column',
+      callback() {
+        handsOnTableSetting.value['fixedColumnsStart'] = this.getSelectedLast()[1]+1
+      }
+    },
+    {
+      name: 'Unfreeze column',
+      callback() {
+        handsOnTableSetting.value['fixedColumnsStart'] = 0
+      }
+    },
+  ],
+  hiddenColumns: {
+    indicators: true,
   },
+  fixedColumnsStart: 0,
   afterChange(change) {
     if (!(change && change.length)) return
     let indexColumnDistrict = secondHeaderColumn.findIndex(sec => sec.key === 'district')
